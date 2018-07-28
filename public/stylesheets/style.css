@@ -1,0 +1,105 @@
+html, body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 5px;
+  height:100%;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  text-align: center;
+  font-size: 20px;
+  color: white;
+  background-color: #666;
+}
+
+header nav {
+  text-align: center;
+  font-size: 18px;
+  background-color: coral;
+}
+
+header nav ul{
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin: 5px;
+}
+
+header nav ul li{
+  margin: 5px 10px;
+  white-space: nowrap;
+}
+
+.main {
+  display: flex;
+  width: 100%;
+  min-height: 600px;
+  background-color: chartreuse;
+  height: auto;
+}
+
+section {
+  float: right;
+  width: 80%;
+  height: auto;
+  background-color: #00B7FF;
+}
+.formContainer{
+  display: inline-block;
+  margin: 50px;
+}
+.formContainer form h2{
+  text-align: center;
+  text-decoration: underline;
+}
+.formContainer form span{
+  width: 80px;
+  display: inline-block;
+}
+.formContainer form input{
+  width: 377px;
+}
+.formContainer form .action{
+  text-align: right;
+}
+.formContainer form > *{
+  margin: 10px;
+}
+.formContainer form .textareatitle{
+  vertical-align: top;
+  margin-top: 24px;
+}
+aside {
+  float: right;
+  width: 20%;
+  height: auto;
+  background-color: blanchedalmond;
+}
+
+aside nav {
+  display: inline-block;
+  font-size: 14px;
+  text-align: center;
+}
+aside nav li{
+  margin: 15px;
+}
+footer {
+  background-color: beige;
+}
+
+.coupon {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  background-color: beige;
+  padding: 5px;
+  margin: 5px;
+  text-align: center;
+  border-radius: 10px;
+}

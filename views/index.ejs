@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+    </script>
+    <script src="https://raw.githack.com/janl/mustache.js/master/mustache.min.js"></script>
+</head>
+<body>
+<header>
+    <h1><%= title %></h1>
+    <nav>
+        <ul>
+            <li><a>option 1</a></li>
+            <li><a>option 2</a></li>
+            <li><a>option 3</a></li>
+            <li><a>option 4</a></li>
+            <li><a>option 5</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <aside>
+        <nav>
+            <h3>menu</h3>
+            <ul>
+                <li><a href="javascript:getCoupons();">Get Coupons</a></li>
+                <li><a href="javascript:addCouponForm();">Add Coupon</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <section id="mainContainer">
+    </section>
+</div>
+<footer>Footer</footer>
+
+<script id="couponTemplate" type="text/template">
+    <div class="coupon">
+        <h3>{{title}}</h3>
+        <img src={{image}}"/>
+        <p>{{text}}</p>
+    </div>
+</script>
+
+<script id="addCouponFormTemplate" type="text/template">
+    <div class="formContainer">
+        <form id="addCouponForm" method="post" action="javascript:addCouponToDb();">
+            <h2>Add coupon form</h2>
+            <span>Name:</span><input type="text" name="name"/><br/>
+            <span>Title:</span><input type="text" name="title"/><br/>
+            <span>Image:</span><input type="text" name="image"/><br/>
+            <span class="textareatitle">Body</span><textarea name="body" rows="3" cols="50"/><br/>
+            <div class="action"><button type="submit">Add Coupon</button></div><br/>
+        </form>
+    </div>
+</script>
+
+<script type="application/javascript">
+/*
+	var couponData = {title: "",
+		image: "",
+		text: ""}
+*/
+	$( document ).ready(function() {
+		getCoupons();
+	});
+
+    function addCoupon(couponData){
+	    var couponTemplate = $("#couponTemplate").html();
+	    var couponHtml = Mustache.render(couponTemplate, couponData);
+	    $("#mainContainer").append(couponHtml);
+    }
+
+    function addCoupons(data){
+	    for(var i=0; i<data.length; i++){
+		    addCoupon(data[i]);
+	    }
+    }
+
+    function addCouponForm(){
+	    var addCouponFormTemplate = $("#addCouponFormTemplate").html();
+	    $("#mainContainer").html(addCouponFormTemplate);
+    }
+
+    function addCouponToDb(){
+	    $.ajax({
+		    url: "http://localhost:3000/coupons/addCoupon",
+		    type: 'POST',
+		    contentType: 'text/plain; charset=utf-8',
+		    data: $("#addCouponForm").serialize()
+	    }).then(
+		    function fulfillHandler(data) {
+			    console.log("ssssssssssssssssssss");
+			    getCoupons();
+		    },
+		    function rejectHandler(jqXHR, textStatus, errorThrown) {
+			    console.log("rrrrrrrrrrrrrrr");
+		    }
+	    ).catch(function errorHandler(error) {
+		    console.log("eeeeeeeeeeeeeeeeeeeeee");
+	    });
+    }
+
+	function getCoupons(){
+		$("#mainContainer").html("");
+		$.ajax({
+			url: "http://localhost:3000/coupons/getCoupons",
+			type: 'GET',
+			contentType: 'application/json; charset=utf-8',
+            dataType: 'json'
+		}).then(
+			function fulfillHandler(data) {
+				addCoupons(data);
+			},
+			function rejectHandler(jqXHR, textStatus, errorThrown) {
+				console.log("error while getCoupons from db");
+			}
+		).catch(function errorHandler(error) {
+			console.log("catch an error while getCoupons from db");
+		});
+	}
+
+</script>
+</body>
+</html>
