@@ -11,6 +11,11 @@ p {
   padding: 0;
 }
 
+input:read-only {
+  background-color: lightgray;
+  color: gray;
+}
+
 header {
   text-align: center;
   font-size: 20px;
@@ -78,6 +83,7 @@ aside {
   float: right;
   width: 20%;
   height: auto;
+  min-width: 160px;
   background-color: blanchedalmond;
 }
 
@@ -102,4 +108,36 @@ footer {
   margin: 5px;
   text-align: center;
   border-radius: 10px;
+  position: relative;
+}
+.coupon .toolbox{
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  width: 100%;
+}
+.coupon .toolbox span{
+  padding: 0 8px;
+}
+
+.linesView .coupon{
+  display: block;
+  width: auto;
+  height: 50px;
+}
+.linesView .coupon h3,
+.linesView .coupon img,
+.linesView .coupon p,
+.linesView .coupon .toolbox{
+  display: inline-block;
+  float: left;
+  height: auto;
+  margin: auto 10px;
+}
+.linesView .coupon .toolbox {
+  right: 20px;
+  left: auto;
+  width: auto;
+  bottom: auto;
+  top: 40%;
 }

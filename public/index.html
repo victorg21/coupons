@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Express</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+    </script>
+    <script src="https://raw.githack.com/janl/mustache.js/master/mustache.min.js"></script>
+    <script src="/javascripts/script.js"></script>
+</head>
+<body>
+<header>
+    <h1>Express</h1>
+    <nav>
+        <ul>
+            <li><a href="javascript:tableView();">table</a></li>
+            <li><a href="javascript:linesView();">lines</a></li>
+            <li><a>option 3</a></li>
+            <li><a>option 4</a></li>
+            <li><a>option 5</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <aside>
+        <nav>
+            <h3>menu</h3>
+            <ul>
+                <li><a href="javascript:getCoupons();">Get Coupons</a></li>
+                <li><a href='javascript:addCouponForm({name: "", title: "", image: "", body: "",
+                    readOnly: "",
+                    formTitle: "Add coupon form",
+                    action: "javascript:addCoupon();",
+                    buttonText: "Add Coupon"});'>Add Coupon</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <section id="mainContainer">
+    </section>
+</div>
+<footer>Footer</footer>
+
+<script id="couponTemplate" type="text/template">
+    <div class="coupon">
+        <h3>{{title}}</h3>
+        <img src={{image}}"/>
+        <p>{{body}}</p>
+        <div class="toolbox">
+            <span><a href="javascript:removeCoupons('{{name}}');">Del</a></span>
+            <span><a href='javascript:addCouponForm({name: "{{name}}",
+                title: "{{title}}", image: "{{image}}", body: "{{body}}",
+                readOnly: "readOnly",
+                formTitle: "Update coupon form",
+                action: "javascript:updateCoupon();",
+                buttonText: "Update Coupon"})'>Edit</a></span>
+        </div>
+    </div>
+</script>
+
+<script id="addCouponFormTemplate" type="text/template">
+    <div class="formContainer">
+        <form id="addCouponForm" method="post" action="{{action}}">
+            <h2>{{formTitle}}</h2>
+            <span>Name:</span><input type="text" name="name" value="{{name}}" {{readOnly}}/><br/>
+            <span>Title:</span><input type="text" name="title" value="{{title}}"/><br/>
+            <span>Image:</span><input type="text" name="image" value="{{image}}"/><br/>
+            <span class="textareatitle">Body</span><textarea name="body" rows="3" cols="50">{{body}}</textarea><br/>
+            <div class="action"><button type="submit">{{buttonText}}</button></div><br/>
+        </form>
+    </div>
+</script>
+
+<script type="application/javascript">
+	/*
+        var couponData = {name: "", title: "", image: "", body: ""}
+    */
+	$( document ).ready(function() {
+		getCoupons();
+	});
+
+	function addCouponToDom(couponData){
+		var couponTemplate = $("#couponTemplate").html();
+		var couponHtml = Mustache.render(couponTemplate, couponData);
+		$("#mainContainer").append(couponHtml);
+	}
+
+	function addCouponsToDom(data){
+		for(var i=0; i<data.length; i++){
+			addCouponToDom(data[i]);
+		}
+	}
+
+	function addCouponForm(couponData){
+		var addCouponFormTemplate = $("#addCouponFormTemplate").html();
+		if(couponData){
+			addCouponFormTemplate = Mustache.render(addCouponFormTemplate, couponData);
+        }
+		$("#mainContainer").html(addCouponFormTemplate);
+	}
+
+	function addCoupon(){
+		$.ajax({
+			url: "http://localhost:3000/coupons/addCoupon",
+			type: 'POST',
+			contentType: 'text/plain; charset=utf-8',
+			data: $("#addCouponForm").serialize()
+		}).then(
+			function fulfillHandler(data) {
+				getCoupons();
+			},
+			function rejectHandler(jqXHR, textStatus, errorThrown) {
+				console.log("error while addCoupon");
+			}
+		).catch(function errorHandler(error) {
+			console.log("catch an error while addCoupon");
+		});
+	}
+
+	function getCoupons(){
+		$("#mainContainer").html("");
+		$.ajax({
+			url: "http://localhost:3000/coupons/getCoupons",
+			type: 'GET',
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json'
+		}).then(
+			function fulfillHandler(data) {
+				addCouponsToDom(data);
+			},
+			function rejectHandler(jqXHR, textStatus, errorThrown) {
+				console.log("error while getCoupons from db");
+			}
+		).catch(function errorHandler(error) {
+			console.log("catch an error while getCoupons from db");
+		});
+	}
+
+	function removeCoupons(name){
+		$("#mainContainer").html("");
+		$.ajax({
+			url: "http://localhost:3000/coupons/removeCoupon",
+			type: 'GET',
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+            data: "name=" +name
+		}).then(
+			function fulfillHandler(data) {
+				getCoupons(data);
+			},
+			function rejectHandler(jqXHR, textStatus, errorThrown) {
+				console.log("error while removeCoupons from db");
+			}
+		).catch(function errorHandler(error) {
+			console.log("catch an error while removeCoupons from db");
+		});
+	}
+
+	function updateCoupon(){
+		$.ajax({
+			url: "http://localhost:3000/coupons/updateCoupon",
+			type: 'POST',
+			contentType: 'text/plain; charset=utf-8',
+			data: $("#addCouponForm").serialize()
+		}).then(
+			function fulfillHandler(data) {
+				getCoupons();
+			},
+			function rejectHandler(jqXHR, textStatus, errorThrown) {
+				console.log("error while updateCoupon");
+			}
+		).catch(function errorHandler(error) {
+			console.log("catch an error while updateCoupon");
+		});
+	}
+</script>
+</body>
+</html>
